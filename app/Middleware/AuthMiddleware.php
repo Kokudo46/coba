@@ -46,23 +46,16 @@ final class AuthMiddleware implements MiddlewareInterface
 
             return $next($request);
         }
-header('Content-Type: application/json');
+$headers = array_change_key_case(getallheaders(), CASE_LOWER);
 
-echo json_encode([
-    'server' => $_SERVER,
-    'headers' => getallheaders()
-], JSON_PRETTY_PRINT);
-
-exit;
-        $valid = Validator::make(
-            [
-                'key' => getallheaders()['X-Access-Key'] ?? null
-            ],
-            [
-                'key' => ['required', 'str', 'trim', 'alpha_num', 'min:49', 'max:225']
-            ]
-        );
-
+$valid = Validator::make(
+    [
+        'key' => $headers['x-access-key'] ?? null
+    ],
+    [
+        'key' => ['required', 'str', 'trim', 'min:49', 'max:225']
+    ]
+);
         if ($valid->fails()) {
             return (new JsonResponse)->errorBadRequest($valid->messages());
         }
