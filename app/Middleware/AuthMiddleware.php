@@ -49,7 +49,7 @@ final class AuthMiddleware implements MiddlewareInterface
 
         $valid = Validator::make(
             [
-                'key' => $request->server->get('HTTP_X_ACCESS_KEY')
+                'key' => getallheaders()['X-Access-Key'] ?? null
             ],
             [
                 'key' => ['required', 'str', 'trim', 'alpha_num', 'min:49', 'max:225']
